@@ -1,4 +1,5 @@
 Dockerfile
+gpu.Dockerfile
 SuperBuild/build
 SuperBuild/download
 SuperBuild/install

@@ -1,11 +1,16 @@
 set(_SB_BINARY_DIR "${SB_BINARY_DIR}/pypopsift")
 
 # Pypopsift
-find_package(CUDA 7.0)
+# find_package(CUDA) uses the legacy FindCUDA module which is removed in
+# cmake 3.27+ (CMP0146).  Use CUDAToolkit which is supported from cmake 3.17.
+find_package(CUDAToolkit)
 
-if(CUDA_FOUND)
+if(CUDAToolkit_FOUND)
     ExternalProject_Add(pypopsift
-        DEPENDS
+        # Must run after opensfm: OpenSfM's SOURCE_DIR is inside SB_INSTALL_DIR/bin/opensfm
+        # and its build step writes files in-place there.  Without this dependency,
+        # OpenSfM can run after pypopsift and overwrite/remove pypopsift.so.
+        DEPENDS opensfm
         PREFIX            ${_SB_BINARY_DIR}
         TMP_DIR           ${_SB_BINARY_DIR}/tmp
         STAMP_DIR         ${_SB_BINARY_DIR}/stamp
@@ -18,8 +23,8 @@ if(CUDA_FOUND)
         #--Configure step-------------
         SOURCE_DIR        ${SB_SOURCE_DIR}/pypopsift
         CMAKE_ARGS
-            -DOUTPUT_DIR=${SB_INSTALL_DIR}/bin/opensfm/opensfm
             -DCMAKE_INSTALL_PREFIX=${SB_INSTALL_DIR}
+            -DOUTPUT_DIR=${SB_INSTALL_DIR}/bin/opensfm/opensfm
             ${WIN32_CMAKE_ARGS}
             ${ARM64_CMAKE_ARGS}
         #--Build step-----------------
@@ -32,5 +37,5 @@ if(CUDA_FOUND)
         LOG_BUILD         OFF
         )
 else()
-    message(WARNING "Could not find CUDA >= 7.0")
+    message(WARNING "CUDAToolkit not found, skipping pypopsift")
 endif()
