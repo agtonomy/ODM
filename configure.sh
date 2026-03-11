@@ -164,6 +164,7 @@ install() {
     echo "Compiling SuperBuild"
     cd ${RUNPATH}/SuperBuild
     mkdir -p build && cd build
+    export PYTHONPATH="${RUNPATH}/venv/lib/python3.12/site-packages:${PYTHONPATH}"
     cmake .. \
         -DBUILD_PYTHON_BINDINGS=ON \
         -DPython_ROOT=/code/venv \

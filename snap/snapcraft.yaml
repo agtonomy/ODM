@@ -135,10 +135,9 @@ parts:
       - libopenmpi-dev
       - pybind11-dev
       - python3-dev
-      - python3-numpy
       - python3-setuptools
       - swig
-    stage-packages:      
+    stage-packages:
       - libcurl3t64-gnutls      
       - libgeotiff5
       - libjsoncpp1
